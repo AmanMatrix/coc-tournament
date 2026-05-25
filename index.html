@@ -3,307 +3,275 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>COC Tournament Manager</title>
+<title>COC War Tournament</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#f5c842;--blue:#79d4f1;--red:#f97b6b;
+  --bg:#0d0f14;--card:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);
+}
+body{
+  min-height:100vh;background:var(--bg);
+  background-image:
+    radial-gradient(ellipse at 15% 15%,rgba(20,55,30,.4) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 85%,rgba(15,35,65,.45) 0%,transparent 50%);
+  font-family:'Rajdhani',sans-serif;color:#fff;padding:28px 16px 80px;
+}
 
-  :root {
-    --gold: #f5c842;
-    --blue: #79d4f1;
-    --red: #f97b6b;
-    --bg: #0d0f14;
-    --card: rgba(255,255,255,0.03);
-    --border: rgba(255,255,255,0.09);
-  }
+/* ── HEADER ── */
+.header{text-align:center;margin-bottom:26px}
+.coc-tag{font-size:9px;letter-spacing:6px;color:var(--gold);font-family:'Cinzel',serif;margin-bottom:6px;opacity:.6}
+.header h1{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(20px,5vw,34px);letter-spacing:2px;color:#fff;text-shadow:0 0 30px rgba(245,200,66,.4)}
+.header .sub{font-size:11px;color:#555;margin-top:6px;letter-spacing:2px}
+.header .hint{font-size:10px;color:var(--gold);opacity:.4;margin-top:4px;letter-spacing:1px}
 
-  body {
-    min-height: 100vh;
-    background: var(--bg);
-    background-image:
-      radial-gradient(ellipse at 15% 15%, rgba(20,55,30,0.4) 0%, transparent 50%),
-      radial-gradient(ellipse at 85% 85%, rgba(15,35,65,0.45) 0%, transparent 50%);
-    font-family: 'Rajdhani', sans-serif;
-    color: #fff;
-    padding: 28px 16px 80px;
-  }
+/* ── LEGEND ── */
+.legend{
+  display:flex;justify-content:center;gap:20px;flex-wrap:wrap;
+  max-width:960px;margin:0 auto 26px;
+  background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;padding:10px 18px;font-size:11px;color:#888;letter-spacing:.4px;
+}
+.legend span{display:flex;align-items:center;gap:5px}
 
-  /* ── HEADER ── */
-  .header { text-align: center; margin-bottom: 32px; }
-  .header .subtitle-top {
-    font-size: 9px; letter-spacing: 6px; color: var(--gold);
-    font-family: 'Cinzel', serif; margin-bottom: 6px; opacity: 0.6;
-  }
-  .header h1 {
-    font-family: 'Cinzel', serif; font-weight: 900;
-    font-size: clamp(20px, 5vw, 34px); letter-spacing: 2px; color: #fff;
-    text-shadow: 0 0 30px rgba(245,200,66,0.4);
-  }
-  .header .subtitle-bottom {
-    font-size: 11px; color: #555; margin-top: 6px; letter-spacing: 2px;
-  }
-  .header .hint {
-    font-size: 10px; color: var(--gold); opacity: 0.45; margin-top: 4px; letter-spacing: 1px;
-  }
+/* ── EDITABLE ── */
+[contenteditable]{cursor:pointer;border-bottom:1px dashed rgba(245,200,66,.35);outline:none;display:inline-block;min-width:8px}
+[contenteditable]:focus{border-bottom:1px solid var(--gold);background:rgba(245,200,66,.06);border-radius:3px;padding:0 3px}
 
-  /* ── EDITABLE SPAN ── */
-  [contenteditable] {
-    cursor: pointer;
-    border-bottom: 1px dashed rgba(245,200,66,0.35);
-    outline: none;
-    display: inline-block;
-    min-width: 10px;
-  }
-  [contenteditable]:focus {
-    border-bottom: 1px solid var(--gold);
-    background: rgba(245,200,66,0.06);
-    border-radius: 3px;
-    padding: 0 3px;
-  }
+/* ── TEAM PANELS ── */
+.teams-row{display:grid;grid-template-columns:1fr auto 1fr;max-width:960px;margin:0 auto 30px;align-items:center;gap:14px}
+.team-panel{border-radius:14px;padding:16px 18px;text-align:center}
+.team-panel.team-a{background:rgba(121,212,241,.05);border:1px solid rgba(121,212,241,.26)}
+.team-panel.team-b{background:rgba(249,123,107,.05);border:1px solid rgba(249,123,107,.26)}
+.team-lbl{font-size:9px;letter-spacing:3px;margin-bottom:5px;opacity:.65;font-family:'Cinzel',serif}
+.team-a .team-lbl{color:var(--blue)}.team-b .team-lbl{color:var(--red)}
+.team-name-el{font-family:'Cinzel',serif;font-size:20px;font-weight:700}
+.team-a .team-name-el{color:var(--blue)}.team-b .team-name-el{color:var(--red)}
+.players-wrap{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:10px}
+.player-pill{font-size:11px;padding:2px 9px;border-radius:20px;letter-spacing:.4px}
+.team-a .player-pill{background:rgba(121,212,241,.08);border:1px solid rgba(121,212,241,.2);color:var(--blue)}
+.team-b .player-pill{background:rgba(249,123,107,.08);border:1px solid rgba(249,123,107,.2);color:var(--red)}
+.vs-center{font-family:'Cinzel',serif;font-size:24px;color:var(--gold);text-align:center}
 
-  /* ── TEAM PANELS ── */
-  .teams-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    max-width: 900px;
-    margin: 0 auto 28px;
-    align-items: center;
-    gap: 14px;
-  }
-  .team-panel {
-    border-radius: 14px;
-    padding: 16px 18px;
-    text-align: center;
-  }
-  .team-panel.team-a {
-    background: rgba(121,212,241,0.06);
-    border: 1px solid rgba(121,212,241,0.28);
-  }
-  .team-panel.team-b {
-    background: rgba(249,123,107,0.06);
-    border: 1px solid rgba(249,123,107,0.28);
-  }
-  .team-label {
-    font-size: 9px; letter-spacing: 3px; margin-bottom: 5px; opacity: 0.7;
-    font-family: 'Cinzel', serif;
-  }
-  .team-a .team-label { color: var(--blue); }
-  .team-b .team-label { color: var(--red); }
-  .team-name {
-    font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700;
-  }
-  .team-a .team-name { color: var(--blue); }
-  .team-b .team-name { color: var(--red); }
-  .players-wrap {
-    display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 10px;
-  }
-  .player-pill {
-    font-size: 11px; padding: 2px 9px; border-radius: 20px; letter-spacing: 0.5px;
-  }
-  .team-a .player-pill {
-    background: rgba(121,212,241,0.08);
-    border: 1px solid rgba(121,212,241,0.22);
-    color: var(--blue);
-  }
-  .team-b .player-pill {
-    background: rgba(249,123,107,0.08);
-    border: 1px solid rgba(249,123,107,0.22);
-    color: var(--red);
-  }
-  .vs-center {
-    font-family: 'Cinzel', serif; font-size: 24px; color: var(--gold); text-align: center;
-  }
+/* ── MATCHUP GRID ── */
+.matchups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;max-width:960px;margin:0 auto}
 
-  /* ── MATCHUP GRID ── */
-  .matchups-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 16px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
+/* ── MATCHUP CARD ── */
+.matchup-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:20px 16px 16px;position:relative;
+  transition:border-color .3s,box-shadow .3s;
+}
+.matchup-card.a-winning{border-color:rgba(121,212,241,.45);box-shadow:0 0 18px rgba(121,212,241,.06)}
+.matchup-card.b-winning{border-color:rgba(249,123,107,.45);box-shadow:0 0 18px rgba(249,123,107,.06)}
+.matchup-card.draw-card{border-color:rgba(245,200,66,.3)}
 
-  /* ── MATCHUP CARD ── */
-  .matchup-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 13px;
-    padding: 16px 16px 14px;
-    position: relative;
-    transition: border-color 0.35s;
-  }
-  .matchup-card.a-winning { border-color: rgba(121,212,241,0.4); }
-  .matchup-card.b-winning { border-color: rgba(249,123,107,0.4); }
+.card-badge{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:#1a1d24;border:1px solid rgba(245,200,66,.28);
+  border-radius:20px;padding:2px 12px;
+  font-size:10px;font-family:'Cinzel',serif;color:var(--gold);letter-spacing:1px;white-space:nowrap;
+}
 
-  .card-badge {
-    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
-    background: #1a1d24; border: 1px solid rgba(245,200,66,0.3);
-    border-radius: 20px; padding: 1px 11px;
-    font-size: 10px; font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 1px;
-    white-space: nowrap;
-  }
+/* Player names in card */
+.card-players{display:flex;justify-content:space-between;align-items:center;margin:4px 0 14px}
+.pname{font-family:'Cinzel',serif;font-size:13px;flex:1}
+.pname.a{color:var(--blue);text-align:left}.pname.b{color:var(--red);text-align:right}
+.vs-sm{font-size:10px;color:var(--gold);padding:0 8px;font-family:'Cinzel',serif}
 
-  .card-players {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 13px; margin-top: 6px;
-  }
-  .card-players .pname {
-    font-family: 'Cinzel', serif; font-size: 13px; flex: 1;
-  }
-  .card-players .pname.a { color: var(--blue); text-align: left; }
-  .card-players .pname.b { color: var(--red); text-align: right; }
-  .card-players .vs-small {
-    font-size: 10px; color: var(--gold); padding: 0 10px; font-family: 'Cinzel', serif;
-  }
+/* ── MATCH ROW (3 matches per matchup) ── */
+/* Layout: [Stars A] [Pct A] [MATCH label] [Pct B] [Stars B] */
+.match-row{
+  display:grid;
+  grid-template-columns:auto 58px 36px 58px auto;
+  gap:6px;align-items:center;
+  margin-bottom:9px;padding-bottom:9px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.match-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
 
-  /* ── MATCH ROW ── */
-  .match-row {
-    display: flex; align-items: center; gap: 7px; margin-bottom: 8px;
-  }
-  .pct-input {
-    width: 56px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 6px;
-    color: #fff;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 15px; font-weight: 700;
-    padding: 4px 6px;
-    outline: none;
-    text-align: center;
-    -moz-appearance: textfield;
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: border-color 0.2s;
-  }
-  .pct-input::-webkit-inner-spin-button,
-  .pct-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-  .pct-input.a { border-color: rgba(121,212,241,0.3); color: var(--blue); }
-  .pct-input.b { border-color: rgba(249,123,107,0.3); color: var(--red); }
-  .pct-input:focus { border-color: var(--gold); }
-  .pct-sym { font-size: 10px; color: #444; }
+.match-lbl{
+  text-align:center;font-size:9px;letter-spacing:1px;
+  color:#444;font-family:'Rajdhani',sans-serif;line-height:1.3;
+}
 
-  .split-bar {
-    flex: 1; height: 5px; background: rgba(255,255,255,0.07);
-    border-radius: 4px; overflow: hidden; position: relative;
-  }
-  .split-fill-a {
-    position: absolute; left: 0; top: 0; height: 100%;
-    background: linear-gradient(90deg, var(--blue), #4ab8e0);
-    border-radius: 4px; transition: width 0.35s;
-  }
-  .split-fill-b {
-    position: absolute; right: 0; top: 0; height: 100%;
-    background: linear-gradient(90deg, #e05a45, var(--red));
-    border-radius: 4px; transition: width 0.35s;
-  }
+/* Star picker */
+.star-picker{display:flex;gap:1px}
+.star-btn{
+  background:none;border:none;cursor:pointer;font-size:15px;line-height:1;
+  opacity:.2;transition:opacity .15s,transform .12s;padding:1px 0;
+}
+.star-btn.lit{opacity:1;transform:scale(1.12)}
+.star-btn:hover{opacity:.6}
 
-  /* ── TOTALS ROW ── */
-  .totals-row {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255,255,255,0.07);
-  }
-  .total-val { font-family: 'Cinzel', serif; font-weight: 700; font-size: 15px; }
-  .total-val.a { color: var(--blue); }
-  .total-val.b { color: var(--red); }
-  .matchup-winner {
-    font-size: 10px; font-family: 'Cinzel', serif; letter-spacing: 1px;
-    background: rgba(0,0,0,0.35); padding: 2px 9px; border-radius: 20px;
-    color: var(--gold); white-space: nowrap;
-  }
+/* Destruction % input */
+.dest-inp{
+  width:100%;background:rgba(255,255,255,.06);border-radius:6px;
+  font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;
+  padding:4px 4px;outline:none;text-align:center;
+  -moz-appearance:textfield;transition:border-color .2s;
+}
+.dest-inp::-webkit-inner-spin-button,.dest-inp::-webkit-outer-spin-button{-webkit-appearance:none}
+.dest-inp.a{border:1px solid rgba(121,212,241,.22);color:var(--blue)}
+.dest-inp.b{border:1px solid rgba(249,123,107,.22);color:var(--red)}
+.dest-inp:focus{border-color:var(--gold)}
 
-  /* ── GRAND RESULT ── */
-  #grand-result {
-    max-width: 900px; margin: 36px auto 0;
-    background: linear-gradient(135deg, rgba(245,200,66,0.07), rgba(255,255,255,0.02));
-    border: 1px solid rgba(245,200,66,0.4);
-    border-radius: 16px; padding: 26px 28px;
-    text-align: center;
-    box-shadow: 0 0 50px rgba(245,200,66,0.07);
-    display: none;
-  }
-  #grand-result.visible { display: block; }
-  .result-label {
-    font-size: 10px; letter-spacing: 4px; color: var(--gold);
-    font-family: 'Cinzel', serif; margin-bottom: 14px;
-  }
-  .result-teams {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
-  }
-  .result-team { text-align: left; }
-  .result-team.b { text-align: right; }
-  .result-team-name {
-    font-family: 'Cinzel', serif; font-size: 19px; font-weight: 700;
-  }
-  .result-team.a .result-team-name { color: var(--blue); }
-  .result-team.b .result-team-name { color: var(--red); }
-  .result-team-stats { font-size: 12px; margin-top: 3px; opacity: 0.75; }
-  .result-team.a .result-team-stats { color: var(--blue); }
-  .result-team.b .result-team-stats { color: var(--red); }
-  .result-vs { font-family: 'Cinzel', serif; font-size: 22px; color: var(--gold); }
+/* Per-match result indicator */
+.match-winner-dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  margin-left:3px;vertical-align:middle;
+}
 
-  .grand-bar {
-    height: 12px; background: rgba(255,255,255,0.07);
-    border-radius: 8px; overflow: hidden; margin-bottom: 20px;
-    display: flex;
-  }
-  .grand-bar-a {
-    background: linear-gradient(90deg, var(--blue), #4ab8e0);
-    transition: width 0.5s;
-  }
-  .grand-bar-b {
-    flex: 1;
-    background: linear-gradient(90deg, #e05a45, var(--red));
-    transition: width 0.5s;
-  }
+/* Matchup result footer */
+.mu-footer{
+  margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.mu-score-row{display:flex;justify-content:space-between;align-items:center;width:100%}
+.mu-side-score{text-align:center}
+.mu-stars-disp{font-size:13px;letter-spacing:1px}
+.mu-pct-disp{font-family:'Cinzel',serif;font-size:12px;font-weight:700;margin-top:1px}
+.mu-pct-disp.a{color:var(--blue)}.mu-pct-disp.b{color:var(--red)}
+.mu-result-badge{
+  font-size:10px;font-family:'Cinzel',serif;letter-spacing:.8px;
+  background:rgba(0,0,0,.4);padding:3px 11px;border-radius:20px;
+  color:var(--gold);white-space:nowrap;margin-top:2px;
+}
+.mu-tb-note{font-size:9px;color:#777;letter-spacing:.4px;margin-top:2px}
 
-  .winner-label {
-    font-size: 11px; color: #aaa; letter-spacing: 3px;
-    font-family: 'Cinzel', serif; margin-bottom: 8px;
-  }
-  .winner-name {
-    font-size: clamp(24px, 5vw, 34px); font-family: 'Cinzel', serif;
-    font-weight: 900; color: var(--gold);
-    text-shadow: 0 0 30px rgba(245,200,66,0.6); letter-spacing: 2px;
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-  @keyframes glow {
-    from { text-shadow: 0 0 20px rgba(245,200,66,0.4); }
-    to   { text-shadow: 0 0 50px rgba(245,200,66,0.9), 0 0 80px rgba(245,200,66,0.3); }
-  }
+/* ── GRAND SUMMARY BOX ── */
+#summary-box{
+  max-width:960px;margin:36px auto 0;
+  border:1px solid rgba(245,200,66,.35);border-radius:16px;
+  overflow:hidden;display:none;
+}
+#summary-box.visible{display:block}
 
-  .footer {
-    text-align: center; margin-top: 44px;
-    font-size: 10px; color: #2a2d35; letter-spacing: 2px;
-  }
+.summary-header{
+  background:rgba(245,200,66,.07);padding:14px 24px;text-align:center;
+  border-bottom:1px solid rgba(245,200,66,.15);
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:var(--gold);
+}
 
-  @media (max-width: 600px) {
-    .teams-row { grid-template-columns: 1fr; }
-    .vs-center { display: none; }
-    .result-teams { flex-direction: column; gap: 10px; }
-    .result-team, .result-team.b { text-align: center; }
-  }
+.summary-body{display:grid;grid-template-columns:1fr auto 1fr}
+
+.summary-team{padding:24px 22px;text-align:center}
+.summary-team.a{background:rgba(121,212,241,.04)}
+.summary-team.b{background:rgba(249,123,107,.04)}
+
+.sum-team-name{font-family:'Cinzel',serif;font-size:18px;font-weight:700;margin-bottom:16px}
+.summary-team.a .sum-team-name{color:var(--blue)}
+.summary-team.b .sum-team-name{color:var(--red)}
+
+.sum-stat{margin-bottom:14px}
+.sum-stat-label{font-size:9px;letter-spacing:3px;color:#555;margin-bottom:5px;font-family:'Cinzel',serif}
+.sum-stat-val{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(26px,4vw,38px)}
+.summary-team.a .sum-stat-val{color:var(--blue)}
+.summary-team.b .sum-stat-val{color:var(--red)}
+.sum-stat-sub{font-size:11px;color:#555;margin-top:3px;letter-spacing:1px}
+
+.sum-matchup-wins{
+  display:inline-block;
+  background:rgba(255,255,255,.05);border-radius:8px;
+  padding:6px 14px;margin-top:4px;
+  font-size:12px;letter-spacing:1px;
+}
+.summary-team.a .sum-matchup-wins{color:var(--blue);border:1px solid rgba(121,212,241,.15)}
+.summary-team.b .sum-matchup-wins{color:var(--red);border:1px solid rgba(249,123,107,.15)}
+
+/* Middle divider column */
+.summary-mid{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:20px 12px;border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06);
+  gap:10px;
+}
+.sum-vs{font-family:'Cinzel',serif;font-size:20px;color:var(--gold)}
+
+/* Star bar */
+.sum-bar-wrap{width:100%;padding:0 22px 20px;border-top:1px solid rgba(255,255,255,.06)}
+.sum-bar-title{text-align:center;font-size:9px;letter-spacing:3px;color:#444;padding:12px 0 6px;font-family:'Cinzel',serif}
+.sum-bar{height:10px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;display:flex}
+.sum-bar-a{background:linear-gradient(90deg,var(--blue),#4ab8e0);transition:width .5s}
+.sum-bar-b{flex:1;background:linear-gradient(90deg,#e05a45,var(--red));transition:width .5s}
+.sum-bar-lbls{display:flex;justify-content:space-between;font-size:10px;color:#555;margin-top:5px;letter-spacing:.5px}
+
+/* Winner announcement */
+.winner-section{
+  padding:20px 24px;border-top:1px solid rgba(245,200,66,.12);
+  text-align:center;background:rgba(245,200,66,.03);
+}
+.winner-label-txt{font-size:10px;letter-spacing:4px;color:#aaa;font-family:'Cinzel',serif;margin-bottom:8px}
+.winner-name-txt{
+  font-family:'Cinzel',serif;font-weight:900;font-size:clamp(22px,4vw,32px);
+  color:var(--gold);letter-spacing:2px;
+  animation:glow 2s ease-in-out infinite alternate;
+}
+.tb-pill{
+  display:inline-block;margin-top:8px;
+  background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.2);
+  border-radius:20px;padding:3px 14px;
+  font-size:10px;color:var(--gold);letter-spacing:1px;font-family:'Cinzel',serif;
+}
+@keyframes glow{
+  from{text-shadow:0 0 20px rgba(245,200,66,.3)}
+  to{text-shadow:0 0 50px rgba(245,200,66,.85),0 0 80px rgba(245,200,66,.25)}
+}
+
+/* ── FINAL TABLE ── */
+.final-table-wrap{padding:0 22px 24px;border-top:1px solid rgba(255,255,255,.06)}
+.final-table-title{text-align:center;font-size:9px;letter-spacing:3px;color:#444;padding:14px 0 10px;font-family:'Cinzel',serif}
+.final-table{width:100%;border-collapse:collapse;font-family:'Rajdhani',sans-serif}
+.final-table th{font-size:10px;letter-spacing:2px;color:#555;font-weight:600;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center;font-family:'Cinzel',serif}
+.final-table th.col-metric{text-align:left;color:#444}
+.final-table td{padding:11px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,.04);font-size:16px;font-weight:700}
+.final-table td.metric-name{text-align:left;font-size:11px;letter-spacing:1px;color:#666;font-family:'Cinzel',serif;font-weight:400}
+.final-table tr:last-child td{border-bottom:none}
+.final-table tr.hl-row td{background:rgba(245,200,66,.03)}
+.val-a{color:var(--blue)}.val-b{color:var(--red)}
+.val-win{position:relative}.val-win::after{content:'👑';font-size:11px;margin-left:5px;vertical-align:middle}
+.final-table .sub-val{display:block;font-size:10px;font-weight:400;color:#555;margin-top:2px;letter-spacing:.5px}
+
+.footer{text-align:center;margin-top:44px;font-size:10px;color:#252830;letter-spacing:2px}
+
+@media(max-width:640px){
+  .teams-row{grid-template-columns:1fr}
+  .vs-center{display:none}
+  .summary-body{grid-template-columns:1fr}
+  .summary-mid{flex-direction:row;border:none;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:12px}
+  .match-row{grid-template-columns:auto 52px 30px 52px auto;gap:4px}
+}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="subtitle-top">⚔ CLASH OF CLANS ⚔</div>
-  <h1><span contenteditable spellcheck="false" id="tournament-name">COC TOURNAMENT 2026</span></h1>
-  <div class="subtitle-bottom">8 MATCHUPS &bull; a1 vs B1 &hellip; A8 vs B8 &bull; 3 MATCHES EACH</div>
-  <div class="hint">✎ Click any name or percentage to edit</div>
+  <div class="coc-tag">⚔ CLASH OF CLANS WAR ⚔</div>
+  <h1><span contenteditable spellcheck="false" id="tournament-name">COC WAR TOURNAMENT 2025</span></h1>
+  <div class="sub">8 MATCHUPS &bull; A1 vs B1 … A8 vs B8 &bull; 3 MATCHES EACH</div>
+  <div class="hint">✎ Click any name or ⭐ to edit &nbsp;|&nbsp; Stars = primary &nbsp;|&nbsp; Destruction % = tiebreaker</div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <span>⭐⭐⭐ 3 Stars = 100% destruction</span>
+  <span>⭐⭐ 2 Stars = Town Hall destroyed</span>
+  <span>⭐ 1 Star = 50%+ destruction</span>
+  <span>🏆 Winner: Stars first → % tiebreaker</span>
 </div>
 
 <!-- TEAM PANELS -->
 <div class="teams-row">
   <div class="team-panel team-a">
-    <div class="team-label">TEAM A</div>
-    <div class="team-name" contenteditable spellcheck="false" id="team-a-name">Team Alpha</div>
+    <div class="team-lbl">TEAM A</div>
+    <div class="team-name-el" contenteditable spellcheck="false" id="team-a-name">Team Alpha</div>
     <div class="players-wrap" id="players-a"></div>
   </div>
   <div class="vs-center">VS</div>
   <div class="team-panel team-b">
-    <div class="team-label">TEAM B</div>
-    <div class="team-name" contenteditable spellcheck="false" id="team-b-name">Team Bravo</div>
+    <div class="team-lbl">TEAM B</div>
+    <div class="team-name-el" contenteditable spellcheck="false" id="team-b-name">Team Bravo</div>
     <div class="players-wrap" id="players-b"></div>
   </div>
 </div>
@@ -311,215 +279,479 @@
 <!-- MATCHUP CARDS -->
 <div class="matchups-grid" id="matchups-grid"></div>
 
-<!-- GRAND RESULT -->
-<div id="grand-result">
-  <div class="result-label">TOURNAMENT RESULT</div>
-  <div class="result-teams">
-    <div class="result-team a">
-      <div class="result-team-name" id="res-a-name">Team Alpha</div>
-      <div class="result-team-stats" id="res-a-stats">0 wins &bull; 0%</div>
+<!-- GRAND SUMMARY BOX -->
+<div id="summary-box">
+  <div class="summary-header">⚔ WAR SCOREBOARD ⚔</div>
+  <div class="summary-body">
+    <!-- TEAM A -->
+    <div class="summary-team a">
+      <div class="sum-team-name" id="sum-a-name">Team Alpha</div>
+      <div class="sum-stat">
+        <div class="sum-stat-label">TOTAL STARS</div>
+        <div class="sum-stat-val" id="sum-a-stars">0</div>
+        <div class="sum-stat-sub" id="sum-a-stars-sub">out of 0 possible</div>
+      </div>
+      <div class="sum-stat">
+        <div class="sum-stat-label">TOTAL DESTRUCTION</div>
+        <div class="sum-stat-val" id="sum-a-pct">0%</div>
+        <div class="sum-stat-sub">across all matches</div>
+      </div>
+      <div class="sum-matchup-wins" id="sum-a-wins">0 matchup wins</div>
     </div>
-    <div class="result-vs">VS</div>
-    <div class="result-team b">
-      <div class="result-team-name" id="res-b-name">Team Bravo</div>
-      <div class="result-team-stats" id="res-b-stats">0 wins &bull; 0%</div>
+
+    <!-- MIDDLE -->
+    <div class="summary-mid">
+      <div class="sum-vs">VS</div>
+    </div>
+
+    <!-- TEAM B -->
+    <div class="summary-team b">
+      <div class="sum-team-name" id="sum-b-name">Team Bravo</div>
+      <div class="sum-stat">
+        <div class="sum-stat-label">TOTAL STARS</div>
+        <div class="sum-stat-val" id="sum-b-stars">0</div>
+        <div class="sum-stat-sub" id="sum-b-stars-sub">out of 0 possible</div>
+      </div>
+      <div class="sum-stat">
+        <div class="sum-stat-label">TOTAL DESTRUCTION</div>
+        <div class="sum-stat-val" id="sum-b-pct">0%</div>
+        <div class="sum-stat-sub">across all matches</div>
+      </div>
+      <div class="sum-matchup-wins" id="sum-b-wins">0 matchup wins</div>
     </div>
   </div>
-  <div class="grand-bar">
-    <div class="grand-bar-a" id="grand-bar-a" style="width:50%"></div>
-    <div class="grand-bar-b" id="grand-bar-b"></div>
+
+  <!-- STAR BAR -->
+  <div class="sum-bar-wrap">
+    <div class="sum-bar-title">STAR SPLIT</div>
+    <div class="sum-bar">
+      <div class="sum-bar-a" id="sum-bar-a" style="width:50%"></div>
+      <div class="sum-bar-b" id="sum-bar-b"></div>
+    </div>
+    <div class="sum-bar-lbls">
+      <span id="sum-bar-lbl-a">Team Alpha</span>
+      <span id="sum-bar-lbl-b">Team Bravo</span>
+    </div>
   </div>
-  <div class="winner-label">WINNER</div>
-  <div class="winner-name" id="winner-name">🏆 — 🏆</div>
+
+  <!-- WINNER -->
+  <div class="winner-section">
+    <div class="winner-label-txt" id="winner-label">WINNER</div>
+    <div class="winner-name-txt" id="winner-name">🏆 — 🏆</div>
+    <div class="tb-pill" id="tb-pill" style="display:none"></div>
+  </div>
+
+  <!-- FINAL TABLE -->
+  <div class="final-table-wrap">
+    <div class="final-table-title">FINAL SCORECARD</div>
+    <table class="final-table">
+      <thead>
+        <tr>
+          <th class="col-metric">STAT</th>
+          <th id="ft-head-a">Team Alpha</th>
+          <th id="ft-head-b">Team Bravo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hl-row">
+          <td class="metric-name">⭐ Total Stars</td>
+          <td class="val-a" id="ft-a-stars">0<span class="sub-val">out of 72</span></td>
+          <td class="val-b" id="ft-b-stars">0<span class="sub-val">out of 72</span></td>
+        </tr>
+        <tr>
+          <td class="metric-name">💥 Total Destruction</td>
+          <td class="val-a" id="ft-a-pct">0%<span class="sub-val">across all matches</span></td>
+          <td class="val-b" id="ft-b-pct">0%<span class="sub-val">across all matches</span></td>
+        </tr>
+        <tr class="hl-row">
+          <td class="metric-name">🏅 Matchup Wins</td>
+          <td class="val-a" id="ft-a-wins">0<span class="sub-val">of 8 matchups</span></td>
+          <td class="val-b" id="ft-b-wins">0<span class="sub-val">of 8 matchups</span></td>
+        </tr>
+        <tr>
+          <td class="metric-name">📊 Avg Destruction</td>
+          <td class="val-a" id="ft-a-avg">0%<span class="sub-val">per match</span></td>
+          <td class="val-b" id="ft-b-avg">0%<span class="sub-val">per match</span></td>
+        </tr>
+        <tr class="hl-row">
+          <td class="metric-name">🎯 Result</td>
+          <td colspan="2" style="text-align:center;font-family:'Cinzel',serif;font-size:13px;color:var(--gold);letter-spacing:1px" id="ft-result">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<div class="footer">COC TOURNAMENT MANAGER &bull; ALL FIELDS EDITABLE</div>
+
+<!-- EXTRA TOTALS TABLE -->
+<div style="max-width:960px;margin:30px auto 0;background:rgba(255,255,255,0.03);
+border:1px solid rgba(245,200,66,.2);border-radius:14px;padding:20px;">
+  <h2 style="text-align:center;font-family:'Cinzel',serif;color:#f5c842;
+  letter-spacing:2px;margin-bottom:18px;">TEAM TOTALS</h2>
+
+  <table style="width:100%;border-collapse:collapse;text-align:center;
+  font-family:'Rajdhani',sans-serif;">
+    <thead>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.1);">
+        <th style="padding:12px;color:#888;">TEAM</th>
+        <th style="padding:12px;color:#888;">TOTAL STARS</th>
+        <th style="padding:12px;color:#888;">TOTAL DESTRUCTION %</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="bottom-team-a" style="padding:14px;color:#79d4f1;font-weight:700;">Team Alpha</td>
+        <td id="bottom-a-stars" style="padding:14px;color:#79d4f1;font-size:22px;font-weight:700;">0</td>
+        <td id="bottom-a-pct" style="padding:14px;color:#79d4f1;font-size:22px;font-weight:700;">0%</td>
+      </tr>
+      <tr style="border-top:1px solid rgba(255,255,255,.08);">
+        <td id="bottom-team-b" style="padding:14px;color:#f97b6b;font-weight:700;">Team Bravo</td>
+        <td id="bottom-b-stars" style="padding:14px;color:#f97b6b;font-size:22px;font-weight:700;">0</td>
+        <td id="bottom-b-pct" style="padding:14px;color:#f97b6b;font-size:22px;font-weight:700;">0%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">COC WAR TOURNAMENT &bull; STARS PRIMARY &bull; DESTRUCTION % TIEBREAKER</div>
 
 <script>
-// ── State ────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// matchups[i].matches[j] = { a:{stars,pct}, b:{stars,pct} }
+// 8 matchups, 3 matches each
+// ─────────────────────────────────────────────────────────────────────────────
+const NUM_MATCHES = 3;
+const NUM_MATCHUPS = 8;
+
 const state = {
-  playersA: Array.from({length:8},(_,i)=>`A${i+1}`),
-  playersB: Array.from({length:8},(_,i)=>`B${i+1}`),
-  // matchups[i].matches[j] = {a, b}  (strings)
-  matchups: Array.from({length:8},()=>({
-    matches: [{a:'',b:''},{a:'',b:''},{a:'',b:''}]
+  playersA: Array.from({length:NUM_MATCHUPS}, (_,i) => `A${i+1}`),
+  playersB: Array.from({length:NUM_MATCHUPS}, (_,i) => `B${i+1}`),
+  matchups: Array.from({length:NUM_MATCHUPS}, () => ({
+    matches: Array.from({length:NUM_MATCHES}, () => ({
+      a: {stars:0, pct:''},
+      b: {stars:0, pct:''}
+    }))
   }))
 };
 
-function parseN(v){ const n=parseFloat(v); return isNaN(n)?0:n; }
-function sumSide(matches, side){ return matches.reduce((s,m)=>s+parseN(m[side]),0); }
+const parseN = v => { const n = parseFloat(v); return isNaN(n) ? 0 : Math.min(100, Math.max(0, n)); };
+const sumStars = (matches, side) => matches.reduce((s, m) => s + m[side].stars, 0);
+const sumPct   = (matches, side) => matches.reduce((s, m) => s + parseN(m[side].pct), 0);
 
-// ── Render player pills ───────────────────────────────────────────────────────
-function renderPlayers(){
-  ['a','b'].forEach(t=>{
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER PLAYER PILLS
+// ─────────────────────────────────────────────────────────────────────────────
+function renderPlayers() {
+  ['a','b'].forEach(t => {
     const wrap = document.getElementById(`players-${t}`);
-    wrap.innerHTML='';
-    state[`players${t.toUpperCase()}`].forEach((name, i)=>{
+    wrap.innerHTML = '';
+    state[`players${t.toUpperCase()}`].forEach((name, i) => {
       const pill = document.createElement('span');
-      pill.className='player-pill';
-      pill.contentEditable='true';
-      pill.spellcheck=false;
-      pill.textContent=name;
-      pill.dataset.team=t; pill.dataset.idx=i;
-      pill.addEventListener('input', ()=>{
-        state[`players${t.toUpperCase()}`][i] = pill.textContent.trim()||`${t.toUpperCase()}${i+1}`;
-        // update card player names
+      pill.className = 'player-pill';
+      pill.contentEditable = 'true';
+      pill.spellcheck = false;
+      pill.textContent = name;
+      pill.addEventListener('input', () => {
+        state[`players${t.toUpperCase()}`][i] = pill.textContent.trim() || `${t.toUpperCase()}${i+1}`;
         const pEl = document.querySelector(`.pname.${t}[data-mu="${i}"]`);
-        if(pEl) pEl.textContent = pill.textContent||`${t.toUpperCase()}${i+1}`;
+        if (pEl) pEl.textContent = pill.textContent.trim() || `${t.toUpperCase()}${i+1}`;
+        updateSummary();
       });
-      pill.addEventListener('keydown', e=>{ if(e.key==='Enter'){e.preventDefault();pill.blur();} });
+      pill.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); pill.blur(); } });
       wrap.appendChild(pill);
     });
   });
 }
 
-// ── Render matchup cards ──────────────────────────────────────────────────────
-function renderCards(){
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER MATCHUP CARDS
+// ─────────────────────────────────────────────────────────────────────────────
+function renderCards() {
   const grid = document.getElementById('matchups-grid');
-  grid.innerHTML='';
-  state.matchups.forEach((mu, mui)=>{
-    const card = document.createElement('div');
-    card.className='matchup-card';
-    card.id=`card-${mui}`;
+  grid.innerHTML = '';
 
-    card.innerHTML=`
-      <div class="card-badge">MATCH ${mui+1}</div>
+  state.matchups.forEach((mu, mui) => {
+    const card = document.createElement('div');
+    card.className = 'matchup-card';
+    card.id = `card-${mui}`;
+
+    card.innerHTML = `
+      <div class="card-badge">MATCHUP ${mui+1}</div>
       <div class="card-players">
         <span class="pname a" data-mu="${mui}">${state.playersA[mui]}</span>
-        <span class="vs-small">VS</span>
+        <span class="vs-sm">VS</span>
         <span class="pname b" data-mu="${mui}">${state.playersB[mui]}</span>
       </div>
-      <div id="rows-${mui}"></div>
-      <div class="totals-row" id="totals-${mui}">
-        <span class="total-val a" id="tot-a-${mui}">0%</span>
-        <span class="matchup-winner" id="mu-winner-${mui}" style="display:none"></span>
-        <span class="total-val b" id="tot-b-${mui}">0%</span>
+      <div id="matches-${mui}"></div>
+      <div class="mu-footer" id="footer-${mui}">
+        <div class="mu-score-row">
+          <div class="mu-side-score">
+            <div class="mu-stars-disp" id="mu-stars-a-${mui}"></div>
+            <div class="mu-pct-disp a" id="mu-pct-a-${mui}">0%</div>
+          </div>
+          <div style="text-align:center">
+            <div class="mu-result-badge" id="mu-badge-${mui}" style="display:none"></div>
+            <div class="mu-tb-note" id="mu-tb-${mui}" style="display:none"></div>
+          </div>
+          <div class="mu-side-score">
+            <div class="mu-stars-disp" id="mu-stars-b-${mui}"></div>
+            <div class="mu-pct-disp b" id="mu-pct-b-${mui}">0%</div>
+          </div>
+        </div>
       </div>
     `;
     grid.appendChild(card);
 
-    const rowsEl = document.getElementById(`rows-${mui}`);
-    mu.matches.forEach((m, mi)=>{
+    // Build match rows
+    const matchWrap = document.getElementById(`matches-${mui}`);
+    mu.matches.forEach((m, mi) => {
       const row = document.createElement('div');
-      row.className='match-row';
-      row.innerHTML=`
-        <input type="number" class="pct-input a" min="0" max="100" placeholder="0"
-               value="${m.a}" data-mu="${mui}" data-mi="${mi}" data-side="a"/>
-        <span class="pct-sym">%</span>
-        <div class="split-bar">
-          <div class="split-fill-a" id="fill-a-${mui}-${mi}" style="width:0%"></div>
-          <div class="split-fill-b" id="fill-b-${mui}-${mi}" style="width:0%"></div>
-        </div>
-        <span class="pct-sym">%</span>
-        <input type="number" class="pct-input b" min="0" max="100" placeholder="0"
-               value="${m.b}" data-mu="${mui}" data-mi="${mi}" data-side="b"/>
+      row.className = 'match-row';
+      row.id = `mrow-${mui}-${mi}`;
+      row.innerHTML = `
+        <div class="star-picker" id="sp-a-${mui}-${mi}"></div>
+        <input type="number" class="dest-inp a" min="0" max="100" placeholder="0"
+               value="${m.a.pct}" data-mu="${mui}" data-mi="${mi}" data-side="a"/>
+        <div class="match-lbl">M${mi+1}</div>
+        <input type="number" class="dest-inp b" min="0" max="100" placeholder="0"
+               value="${m.b.pct}" data-mu="${mui}" data-mi="${mi}" data-side="b"/>
+        <div class="star-picker" id="sp-b-${mui}-${mi}" style="justify-content:flex-end"></div>
       `;
-      rowsEl.appendChild(row);
+      matchWrap.appendChild(row);
+
+      // Star pickers
+      ['a','b'].forEach(side => {
+        const sp = document.getElementById(`sp-${side}-${mui}-${mi}`);
+        for (let s = 1; s <= 3; s++) {
+          const btn = document.createElement('button');
+          btn.className = 'star-btn';
+          btn.textContent = '⭐';
+          btn.dataset.star = s;
+          btn.title = `${s} star${s > 1 ? 's' : ''}`;
+          if (s <= state.matchups[mui].matches[mi][side].stars) btn.classList.add('lit');
+          btn.addEventListener('click', () => {
+            const cur = state.matchups[mui].matches[mi][side].stars;
+            state.matchups[mui].matches[mi][side].stars = (cur === s) ? 0 : s;
+            refreshStars(mui, mi, side);
+            updateCard(mui);
+            updateSummary();
+          });
+          sp.appendChild(btn);
+        }
+      });
     });
+
+    // Pct input listeners
+    card.querySelectorAll('.dest-inp').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const { mu: muiS, mi, side } = inp.dataset;
+        state.matchups[+muiS].matches[+mi][side].pct = inp.value;
+        updateCard(+muiS);
+        updateSummary();
+      });
+    });
+
+    updateCard(mui);
   });
 
-  // attach input listeners
-  document.querySelectorAll('.pct-input').forEach(inp=>{
-    inp.addEventListener('input', ()=>{
-      const mui=+inp.dataset.mu, mi=+inp.dataset.mi, side=inp.dataset.side;
-      state.matchups[mui].matches[mi][side] = inp.value;
-      updateCard(mui);
-      updateGrand();
-    });
-  });
-
-  state.matchups.forEach((_,mui)=>updateCard(mui));
-  updateGrand();
+  updateSummary();
 }
 
-function updateCard(mui){
+// ─────────────────────────────────────────────────────────────────────────────
+// REFRESH STAR BUTTONS
+// ─────────────────────────────────────────────────────────────────────────────
+function refreshStars(mui, mi, side) {
+  const val = state.matchups[mui].matches[mi][side].stars;
+  document.getElementById(`sp-${side}-${mui}-${mi}`)
+    .querySelectorAll('.star-btn')
+    .forEach(btn => btn.classList.toggle('lit', +btn.dataset.star <= val));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UPDATE MATCHUP CARD FOOTER
+// ─────────────────────────────────────────────────────────────────────────────
+function updateCard(mui) {
   const mu = state.matchups[mui];
-  const aTotal = sumSide(mu.matches,'a');
-  const bTotal = sumSide(mu.matches,'b');
-  const hasData = aTotal>0||bTotal>0;
+  const aStars = sumStars(mu.matches, 'a');
+  const bStars = sumStars(mu.matches, 'b');
+  const aPct   = sumPct(mu.matches, 'a');
+  const bPct   = sumPct(mu.matches, 'b');
+  const maxS   = NUM_MATCHES * 3;
+  const hasData = aStars > 0 || bStars > 0 || aPct > 0 || bPct > 0;
 
-  // update split bars per match row
-  mu.matches.forEach((m,mi)=>{
-    const a=parseN(m.a), b=parseN(m.b), t=a+b;
-    const fillA = document.getElementById(`fill-a-${mui}-${mi}`);
-    const fillB = document.getElementById(`fill-b-${mui}-${mi}`);
-    if(t>0){
-      fillA.style.width = `${(a/t)*100}%`;
-      fillB.style.width = `${(b/t)*100}%`;
-    } else {
-      fillA.style.width='0%';
-      fillB.style.width='0%';
-    }
-  });
+  document.getElementById(`mu-stars-a-${mui}`).textContent = '⭐'.repeat(aStars) + '☆'.repeat(maxS - aStars);
+  document.getElementById(`mu-stars-b-${mui}`).textContent = '⭐'.repeat(bStars) + '☆'.repeat(maxS - bStars);
+  document.getElementById(`mu-pct-a-${mui}`).textContent   = aPct.toFixed(1) + '%';
+  document.getElementById(`mu-pct-b-${mui}`).textContent   = bPct.toFixed(1) + '%';
 
-  document.getElementById(`tot-a-${mui}`).textContent = aTotal.toFixed(1)+'%';
-  document.getElementById(`tot-b-${mui}`).textContent = bTotal.toFixed(1)+'%';
+  const badge  = document.getElementById(`mu-badge-${mui}`);
+  const tbNote = document.getElementById(`mu-tb-${mui}`);
+  const card   = document.getElementById(`card-${mui}`);
+  card.classList.remove('a-winning', 'b-winning', 'draw-card');
 
-  const winEl = document.getElementById(`mu-winner-${mui}`);
-  const card  = document.getElementById(`card-${mui}`);
-  card.classList.remove('a-winning','b-winning');
+  if (!hasData) { badge.style.display = 'none'; tbNote.style.display = 'none'; return; }
 
-  if(hasData){
-    winEl.style.display='block';
-    if(aTotal>bTotal){
-      winEl.textContent = `⚔️ ${state.playersA[mui]}`;
+  badge.style.display = 'block';
+  if (aStars !== bStars) {
+    tbNote.style.display = 'none';
+    if (aStars > bStars) {
+      badge.textContent = `⚔️ ${state.playersA[mui]} wins`;
       card.classList.add('a-winning');
-    } else if(bTotal>aTotal){
-      winEl.textContent = `⚔️ ${state.playersB[mui]}`;
+    } else {
+      badge.textContent = `⚔️ ${state.playersB[mui]} wins`;
+      card.classList.add('b-winning');
+    }
+  } else {
+    tbNote.style.display = 'block';
+    tbNote.textContent = `Stars tied ${aStars}⭐ → using destruction %`;
+    if (aPct > bPct) {
+      badge.textContent = `⚔️ ${state.playersA[mui]} wins (%)`;
+      card.classList.add('a-winning');
+    } else if (bPct > aPct) {
+      badge.textContent = `⚔️ ${state.playersB[mui]} wins (%)`;
       card.classList.add('b-winning');
     } else {
-      winEl.textContent = '🤝 DRAW';
+      badge.textContent = '🤝 PERFECT DRAW';
+      card.classList.add('draw-card');
     }
-  } else {
-    winEl.style.display='none';
   }
 }
 
-function updateGrand(){
-  let aTotal=0, bTotal=0, aWins=0, bWins=0;
-  state.matchups.forEach(mu=>{
-    const a=sumSide(mu.matches,'a'), b=sumSide(mu.matches,'b');
-    aTotal+=a; bTotal+=b;
-    if(a>b) aWins++; else if(b>a) bWins++;
+// ─────────────────────────────────────────────────────────────────────────────
+// UPDATE GRAND SUMMARY BOX
+// ─────────────────────────────────────────────────────────────────────────────
+function updateSummary() {
+  let aStars=0, bStars=0, aPct=0, bPct=0, aWins=0, bWins=0;
+
+  state.matchups.forEach(mu => {
+    const as = sumStars(mu.matches,'a'), bs = sumStars(mu.matches,'b');
+    const ap = sumPct(mu.matches,'a'),   bp = sumPct(mu.matches,'b');
+    aStars += as; bStars += bs; aPct += ap; bPct += bp;
+    // matchup winner
+    if (as !== bs) { if (as > bs) aWins++; else bWins++; }
+    else if (ap > bp) aWins++; else if (bp > ap) bWins++;
   });
 
-  const hasData = aTotal>0||bTotal>0;
-  const grand = document.getElementById('grand-result');
-  if(!hasData){ grand.classList.remove('visible'); return; }
-  grand.classList.add('visible');
+  const hasData = aStars > 0 || bStars > 0 || aPct > 0 || bPct > 0;
+  const box = document.getElementById('summary-box');
+  if (!hasData) { box.classList.remove('visible'); return; }
+  box.classList.add('visible');
 
-  const teamAName = document.getElementById('team-a-name').textContent.trim()||'Team Alpha';
-  const teamBName = document.getElementById('team-b-name').textContent.trim()||'Team Bravo';
+  const teamA = document.getElementById('team-a-name').textContent.trim() || 'Team Alpha';
+  const teamB = document.getElementById('team-b-name').textContent.trim() || 'Team Bravo';
+  const maxPossible = NUM_MATCHUPS * NUM_MATCHES * 3;
 
-  document.getElementById('res-a-name').textContent = teamAName;
-  document.getElementById('res-b-name').textContent = teamBName;
-  document.getElementById('res-a-stats').textContent = `${aWins} matchup wins • ${aTotal.toFixed(1)}%`;
-  document.getElementById('res-b-stats').textContent = `${bWins} matchup wins • ${bTotal.toFixed(1)}%`;
+  document.getElementById('sum-a-name').textContent = teamA;
+  document.getElementById('sum-b-name').textContent = teamB;
+  document.getElementById('sum-a-stars').textContent = aStars;
+  document.getElementById('sum-b-stars').textContent = bStars;
+  document.getElementById('sum-a-stars-sub').textContent = `out of ${maxPossible} possible`;
+  document.getElementById('sum-b-stars-sub').textContent = `out of ${maxPossible} possible`;
+  document.getElementById('sum-a-pct').textContent = aPct.toFixed(1) + '%';
+  document.getElementById('sum-b-pct').textContent = bPct.toFixed(1) + '%';
+  document.getElementById('sum-a-wins').textContent = `${aWins} matchup win${aWins!==1?'s':''}`;
+  document.getElementById('sum-b-wins').textContent = `${bWins} matchup win${bWins!==1?'s':''}`;
 
-  const total = aTotal+bTotal;
-  const aPct = total>0 ? (aTotal/total)*100 : 50;
-  document.getElementById('grand-bar-a').style.width = aPct+'%';
+  // Star bar
+  const totalS = aStars + bStars;
+  const aSplit = totalS > 0 ? (aStars / totalS) * 100 : 50;
+  document.getElementById('sum-bar-a').style.width = aSplit + '%';
+  document.getElementById('sum-bar-lbl-a').textContent = `${teamA}: ${aStars}⭐`;
+  document.getElementById('sum-bar-lbl-b').textContent = `${teamB}: ${bStars}⭐`;
 
-  const winnerEl = document.getElementById('winner-name');
-  const wlEl = document.querySelector('.winner-label');
-  if(aTotal>bTotal){
-    winnerEl.textContent = `🏆 ${teamAName} 🏆`;
-    wlEl.style.display='block';
-  } else if(bTotal>aTotal){
-    winnerEl.textContent = `🏆 ${teamBName} 🏆`;
-    wlEl.style.display='block';
+  // Winner logic
+  const winEl  = document.getElementById('winner-name');
+  const lblEl  = document.getElementById('winner-label');
+  const tbPill = document.getElementById('tb-pill');
+  let winnerName = '';
+
+  if (aStars !== bStars) {
+    tbPill.style.display = 'none';
+    lblEl.style.display  = 'block';
+    if (aStars > bStars) { winEl.textContent = `🏆 ${teamA} 🏆`; winnerName = teamA; }
+    else                 { winEl.textContent = `🏆 ${teamB} 🏆`; winnerName = teamB; }
   } else {
-    winnerEl.textContent = "🤝 IT'S A DRAW";
-    wlEl.style.display='none';
+    tbPill.style.display = 'inline-block';
+    tbPill.textContent   = `⚡ Stars tied at ${aStars} — decided by destruction %`;
+    if (aPct > bPct) {
+      lblEl.style.display = 'block';
+      winEl.textContent   = `🏆 ${teamA} wins by % 🏆`;
+      winnerName = teamA;
+    } else if (bPct > aPct) {
+      lblEl.style.display = 'block';
+      winEl.textContent   = `🏆 ${teamB} wins by % 🏆`;
+      winnerName = teamB;
+    } else {
+      lblEl.style.display = 'none';
+      winEl.textContent   = "🤝 IT'S A PERFECT DRAW";
+    }
   }
+
+  // ── FINAL TABLE ──────────────────────────────────────────────────────────
+  const totalMatches = NUM_MATCHUPS * NUM_MATCHES;
+  const aAvg = totalMatches > 0 ? aPct / totalMatches : 0;
+  const bAvg = totalMatches > 0 ? bPct / totalMatches : 0;
+
+  document.getElementById('ft-head-a').textContent = teamA;
+  document.getElementById('ft-head-b').textContent = teamB;
+
+  // Stars row — highlight winner
+  const ftAS = document.getElementById('ft-a-stars');
+  const ftBS = document.getElementById('ft-b-stars');
+  ftAS.innerHTML = `${aStars}<span class="sub-val">out of ${maxPossible}</span>`;
+  ftBS.innerHTML = `${bStars}<span class="sub-val">out of ${maxPossible}</span>`;
+  ftAS.classList.toggle('val-win', aStars > bStars);
+  ftBS.classList.toggle('val-win', bStars > aStars);
+
+  // Destruction % row — highlight winner
+  const ftAP = document.getElementById('ft-a-pct');
+  const ftBP = document.getElementById('ft-b-pct');
+  ftAP.innerHTML = `${aPct.toFixed(1)}%<span class="sub-val">across all matches</span>`;
+  ftBP.innerHTML = `${bPct.toFixed(1)}%<span class="sub-val">across all matches</span>`;
+  ftAP.classList.toggle('val-win', aPct > bPct);
+  ftBP.classList.toggle('val-win', bPct > aPct);
+
+  // Matchup wins row
+  const ftAW = document.getElementById('ft-a-wins');
+  const ftBW = document.getElementById('ft-b-wins');
+  ftAW.innerHTML = `${aWins}<span class="sub-val">of ${NUM_MATCHUPS} matchups</span>`;
+  ftBW.innerHTML = `${bWins}<span class="sub-val">of ${NUM_MATCHUPS} matchups</span>`;
+  ftAW.classList.toggle('val-win', aWins > bWins);
+  ftBW.classList.toggle('val-win', bWins > aWins);
+
+  // Avg destruction
+  const ftAA = document.getElementById('ft-a-avg');
+  const ftBA = document.getElementById('ft-b-avg');
+  ftAA.innerHTML = `${aAvg.toFixed(1)}%<span class="sub-val">per match</span>`;
+  ftBA.innerHTML = `${bAvg.toFixed(1)}%<span class="sub-val">per match</span>`;
+  ftAA.classList.toggle('val-win', aAvg > bAvg);
+  ftBA.classList.toggle('val-win', bAvg > aAvg);
+
+  // Result cell
+  const ftResult = document.getElementById('ft-result');
+  if (winnerName) ftResult.textContent = `🏆 ${winnerName} wins the war!`;
+  else ftResult.textContent = "🤝 Perfect Draw";
+  // Bottom totals table
+  document.getElementById('bottom-team-a').textContent = teamA;
+  document.getElementById('bottom-team-b').textContent = teamB;
+  document.getElementById('bottom-a-stars').textContent = aStars;
+  document.getElementById('bottom-b-stars').textContent = bStars;
+  document.getElementById('bottom-a-pct').textContent = aPct.toFixed(1) + '%';
+  document.getElementById('bottom-b-pct').textContent = bPct.toFixed(1) + '%';
+
 }
 
-// sync grand result team names when edited
-['team-a-name','team-b-name'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', updateGrand);
+// ─────────────────────────────────────────────────────────────────────────────
+// SYNC TEAM NAMES
+// ─────────────────────────────────────────────────────────────────────────────
+['team-a-name','team-b-name'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateSummary);
 });
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
 renderPlayers();
 renderCards();
 </script>
