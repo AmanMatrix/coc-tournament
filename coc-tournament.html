@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>COC Tournament Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #f5c842;
+    --blue: #79d4f1;
+    --red: #f97b6b;
+    --bg: #0d0f14;
+    --card: rgba(255,255,255,0.03);
+    --border: rgba(255,255,255,0.09);
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 15% 15%, rgba(20,55,30,0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 85%, rgba(15,35,65,0.45) 0%, transparent 50%);
+    font-family: 'Rajdhani', sans-serif;
+    color: #fff;
+    padding: 28px 16px 80px;
+  }
+
+  /* ── HEADER ── */
+  .header { text-align: center; margin-bottom: 32px; }
+  .header .subtitle-top {
+    font-size: 9px; letter-spacing: 6px; color: var(--gold);
+    font-family: 'Cinzel', serif; margin-bottom: 6px; opacity: 0.6;
+  }
+  .header h1 {
+    font-family: 'Cinzel', serif; font-weight: 900;
+    font-size: clamp(20px, 5vw, 34px); letter-spacing: 2px; color: #fff;
+    text-shadow: 0 0 30px rgba(245,200,66,0.4);
+  }
+  .header .subtitle-bottom {
+    font-size: 11px; color: #555; margin-top: 6px; letter-spacing: 2px;
+  }
+  .header .hint {
+    font-size: 10px; color: var(--gold); opacity: 0.45; margin-top: 4px; letter-spacing: 1px;
+  }
+
+  /* ── EDITABLE SPAN ── */
+  [contenteditable] {
+    cursor: pointer;
+    border-bottom: 1px dashed rgba(245,200,66,0.35);
+    outline: none;
+    display: inline-block;
+    min-width: 10px;
+  }
+  [contenteditable]:focus {
+    border-bottom: 1px solid var(--gold);
+    background: rgba(245,200,66,0.06);
+    border-radius: 3px;
+    padding: 0 3px;
+  }
+
+  /* ── TEAM PANELS ── */
+  .teams-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    max-width: 900px;
+    margin: 0 auto 28px;
+    align-items: center;
+    gap: 14px;
+  }
+  .team-panel {
+    border-radius: 14px;
+    padding: 16px 18px;
+    text-align: center;
+  }
+  .team-panel.team-a {
+    background: rgba(121,212,241,0.06);
+    border: 1px solid rgba(121,212,241,0.28);
+  }
+  .team-panel.team-b {
+    background: rgba(249,123,107,0.06);
+    border: 1px solid rgba(249,123,107,0.28);
+  }
+  .team-label {
+    font-size: 9px; letter-spacing: 3px; margin-bottom: 5px; opacity: 0.7;
+    font-family: 'Cinzel', serif;
+  }
+  .team-a .team-label { color: var(--blue); }
+  .team-b .team-label { color: var(--red); }
+  .team-name {
+    font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700;
+  }
+  .team-a .team-name { color: var(--blue); }
+  .team-b .team-name { color: var(--red); }
+  .players-wrap {
+    display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 10px;
+  }
+  .player-pill {
+    font-size: 11px; padding: 2px 9px; border-radius: 20px; letter-spacing: 0.5px;
+  }
+  .team-a .player-pill {
+    background: rgba(121,212,241,0.08);
+    border: 1px solid rgba(121,212,241,0.22);
+    color: var(--blue);
+  }
+  .team-b .player-pill {
+    background: rgba(249,123,107,0.08);
+    border: 1px solid rgba(249,123,107,0.22);
+    color: var(--red);
+  }
+  .vs-center {
+    font-family: 'Cinzel', serif; font-size: 24px; color: var(--gold); text-align: center;
+  }
+
+  /* ── MATCHUP GRID ── */
+  .matchups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ── MATCHUP CARD ── */
+  .matchup-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 16px 16px 14px;
+    position: relative;
+    transition: border-color 0.35s;
+  }
+  .matchup-card.a-winning { border-color: rgba(121,212,241,0.4); }
+  .matchup-card.b-winning { border-color: rgba(249,123,107,0.4); }
+
+  .card-badge {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    background: #1a1d24; border: 1px solid rgba(245,200,66,0.3);
+    border-radius: 20px; padding: 1px 11px;
+    font-size: 10px; font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .card-players {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 13px; margin-top: 6px;
+  }
+  .card-players .pname {
+    font-family: 'Cinzel', serif; font-size: 13px; flex: 1;
+  }
+  .card-players .pname.a { color: var(--blue); text-align: left; }
+  .card-players .pname.b { color: var(--red); text-align: right; }
+  .card-players .vs-small {
+    font-size: 10px; color: var(--gold); padding: 0 10px; font-family: 'Cinzel', serif;
+  }
+
+  /* ── MATCH ROW ── */
+  .match-row {
+    display: flex; align-items: center; gap: 7px; margin-bottom: 8px;
+  }
+  .pct-input {
+    width: 56px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px; font-weight: 700;
+    padding: 4px 6px;
+    outline: none;
+    text-align: center;
+    -moz-appearance: textfield;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: border-color 0.2s;
+  }
+  .pct-input::-webkit-inner-spin-button,
+  .pct-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .pct-input.a { border-color: rgba(121,212,241,0.3); color: var(--blue); }
+  .pct-input.b { border-color: rgba(249,123,107,0.3); color: var(--red); }
+  .pct-input:focus { border-color: var(--gold); }
+  .pct-sym { font-size: 10px; color: #444; }
+
+  .split-bar {
+    flex: 1; height: 5px; background: rgba(255,255,255,0.07);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .split-fill-a {
+    position: absolute; left: 0; top: 0; height: 100%;
+    background: linear-gradient(90deg, var(--blue), #4ab8e0);
+    border-radius: 4px; transition: width 0.35s;
+  }
+  .split-fill-b {
+    position: absolute; right: 0; top: 0; height: 100%;
+    background: linear-gradient(90deg, #e05a45, var(--red));
+    border-radius: 4px; transition: width 0.35s;
+  }
+
+  /* ── TOTALS ROW ── */
+  .totals-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .total-val { font-family: 'Cinzel', serif; font-weight: 700; font-size: 15px; }
+  .total-val.a { color: var(--blue); }
+  .total-val.b { color: var(--red); }
+  .matchup-winner {
+    font-size: 10px; font-family: 'Cinzel', serif; letter-spacing: 1px;
+    background: rgba(0,0,0,0.35); padding: 2px 9px; border-radius: 20px;
+    color: var(--gold); white-space: nowrap;
+  }
+
+  /* ── GRAND RESULT ── */
+  #grand-result {
+    max-width: 900px; margin: 36px auto 0;
+    background: linear-gradient(135deg, rgba(245,200,66,0.07), rgba(255,255,255,0.02));
+    border: 1px solid rgba(245,200,66,0.4);
+    border-radius: 16px; padding: 26px 28px;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(245,200,66,0.07);
+    display: none;
+  }
+  #grand-result.visible { display: block; }
+  .result-label {
+    font-size: 10px; letter-spacing: 4px; color: var(--gold);
+    font-family: 'Cinzel', serif; margin-bottom: 14px;
+  }
+  .result-teams {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+  }
+  .result-team { text-align: left; }
+  .result-team.b { text-align: right; }
+  .result-team-name {
+    font-family: 'Cinzel', serif; font-size: 19px; font-weight: 700;
+  }
+  .result-team.a .result-team-name { color: var(--blue); }
+  .result-team.b .result-team-name { color: var(--red); }
+  .result-team-stats { font-size: 12px; margin-top: 3px; opacity: 0.75; }
+  .result-team.a .result-team-stats { color: var(--blue); }
+  .result-team.b .result-team-stats { color: var(--red); }
+  .result-vs { font-family: 'Cinzel', serif; font-size: 22px; color: var(--gold); }
+
+  .grand-bar {
+    height: 12px; background: rgba(255,255,255,0.07);
+    border-radius: 8px; overflow: hidden; margin-bottom: 20px;
+    display: flex;
+  }
+  .grand-bar-a {
+    background: linear-gradient(90deg, var(--blue), #4ab8e0);
+    transition: width 0.5s;
+  }
+  .grand-bar-b {
+    flex: 1;
+    background: linear-gradient(90deg, #e05a45, var(--red));
+    transition: width 0.5s;
+  }
+
+  .winner-label {
+    font-size: 11px; color: #aaa; letter-spacing: 3px;
+    font-family: 'Cinzel', serif; margin-bottom: 8px;
+  }
+  .winner-name {
+    font-size: clamp(24px, 5vw, 34px); font-family: 'Cinzel', serif;
+    font-weight: 900; color: var(--gold);
+    text-shadow: 0 0 30px rgba(245,200,66,0.6); letter-spacing: 2px;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  @keyframes glow {
+    from { text-shadow: 0 0 20px rgba(245,200,66,0.4); }
+    to   { text-shadow: 0 0 50px rgba(245,200,66,0.9), 0 0 80px rgba(245,200,66,0.3); }
+  }
+
+  .footer {
+    text-align: center; margin-top: 44px;
+    font-size: 10px; color: #2a2d35; letter-spacing: 2px;
+  }
+
+  @media (max-width: 600px) {
+    .teams-row { grid-template-columns: 1fr; }
+    .vs-center { display: none; }
+    .result-teams { flex-direction: column; gap: 10px; }
+    .result-team, .result-team.b { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="subtitle-top">⚔ CLASH OF CLANS ⚔</div>
+  <h1><span contenteditable spellcheck="false" id="tournament-name">COC TOURNAMENT 2025</span></h1>
+  <div class="subtitle-bottom">8 MATCHUPS &bull; A1 vs B1 &hellip; A8 vs B8 &bull; 3 MATCHES EACH</div>
+  <div class="hint">✎ Click any name or percentage to edit</div>
+</div>
+
+<!-- TEAM PANELS -->
+<div class="teams-row">
+  <div class="team-panel team-a">
+    <div class="team-label">TEAM A</div>
+    <div class="team-name" contenteditable spellcheck="false" id="team-a-name">Team Alpha</div>
+    <div class="players-wrap" id="players-a"></div>
+  </div>
+  <div class="vs-center">VS</div>
+  <div class="team-panel team-b">
+    <div class="team-label">TEAM B</div>
+    <div class="team-name" contenteditable spellcheck="false" id="team-b-name">Team Bravo</div>
+    <div class="players-wrap" id="players-b"></div>
+  </div>
+</div>
+
+<!-- MATCHUP CARDS -->
+<div class="matchups-grid" id="matchups-grid"></div>
+
+<!-- GRAND RESULT -->
+<div id="grand-result">
+  <div class="result-label">TOURNAMENT RESULT</div>
+  <div class="result-teams">
+    <div class="result-team a">
+      <div class="result-team-name" id="res-a-name">Team Alpha</div>
+      <div class="result-team-stats" id="res-a-stats">0 wins &bull; 0%</div>
+    </div>
+    <div class="result-vs">VS</div>
+    <div class="result-team b">
+      <div class="result-team-name" id="res-b-name">Team Bravo</div>
+      <div class="result-team-stats" id="res-b-stats">0 wins &bull; 0%</div>
+    </div>
+  </div>
+  <div class="grand-bar">
+    <div class="grand-bar-a" id="grand-bar-a" style="width:50%"></div>
+    <div class="grand-bar-b" id="grand-bar-b"></div>
+  </div>
+  <div class="winner-label">WINNER</div>
+  <div class="winner-name" id="winner-name">🏆 — 🏆</div>
+</div>
+
+<div class="footer">COC TOURNAMENT MANAGER &bull; ALL FIELDS EDITABLE</div>
+
+<script>
+// ── State ────────────────────────────────────────────────────────────────────
+const state = {
+  playersA: Array.from({length:8},(_,i)=>`A${i+1}`),
+  playersB: Array.from({length:8},(_,i)=>`B${i+1}`),
+  // matchups[i].matches[j] = {a, b}  (strings)
+  matchups: Array.from({length:8},()=>({
+    matches: [{a:'',b:''},{a:'',b:''},{a:'',b:''}]
+  }))
+};
+
+function parseN(v){ const n=parseFloat(v); return isNaN(n)?0:n; }
+function sumSide(matches, side){ return matches.reduce((s,m)=>s+parseN(m[side]),0); }
+
+// ── Render player pills ───────────────────────────────────────────────────────
+function renderPlayers(){
+  ['a','b'].forEach(t=>{
+    const wrap = document.getElementById(`players-${t}`);
+    wrap.innerHTML='';
+    state[`players${t.toUpperCase()}`].forEach((name, i)=>{
+      const pill = document.createElement('span');
+      pill.className='player-pill';
+      pill.contentEditable='true';
+      pill.spellcheck=false;
+      pill.textContent=name;
+      pill.dataset.team=t; pill.dataset.idx=i;
+      pill.addEventListener('input', ()=>{
+        state[`players${t.toUpperCase()}`][i] = pill.textContent.trim()||`${t.toUpperCase()}${i+1}`;
+        // update card player names
+        const pEl = document.querySelector(`.pname.${t}[data-mu="${i}"]`);
+        if(pEl) pEl.textContent = pill.textContent||`${t.toUpperCase()}${i+1}`;
+      });
+      pill.addEventListener('keydown', e=>{ if(e.key==='Enter'){e.preventDefault();pill.blur();} });
+      wrap.appendChild(pill);
+    });
+  });
+}
+
+// ── Render matchup cards ──────────────────────────────────────────────────────
+function renderCards(){
+  const grid = document.getElementById('matchups-grid');
+  grid.innerHTML='';
+  state.matchups.forEach((mu, mui)=>{
+    const card = document.createElement('div');
+    card.className='matchup-card';
+    card.id=`card-${mui}`;
+
+    card.innerHTML=`
+      <div class="card-badge">MATCH ${mui+1}</div>
+      <div class="card-players">
+        <span class="pname a" data-mu="${mui}">${state.playersA[mui]}</span>
+        <span class="vs-small">VS</span>
+        <span class="pname b" data-mu="${mui}">${state.playersB[mui]}</span>
+      </div>
+      <div id="rows-${mui}"></div>
+      <div class="totals-row" id="totals-${mui}">
+        <span class="total-val a" id="tot-a-${mui}">0%</span>
+        <span class="matchup-winner" id="mu-winner-${mui}" style="display:none"></span>
+        <span class="total-val b" id="tot-b-${mui}">0%</span>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    const rowsEl = document.getElementById(`rows-${mui}`);
+    mu.matches.forEach((m, mi)=>{
+      const row = document.createElement('div');
+      row.className='match-row';
+      row.innerHTML=`
+        <input type="number" class="pct-input a" min="0" max="100" placeholder="0"
+               value="${m.a}" data-mu="${mui}" data-mi="${mi}" data-side="a"/>
+        <span class="pct-sym">%</span>
+        <div class="split-bar">
+          <div class="split-fill-a" id="fill-a-${mui}-${mi}" style="width:0%"></div>
+          <div class="split-fill-b" id="fill-b-${mui}-${mi}" style="width:0%"></div>
+        </div>
+        <span class="pct-sym">%</span>
+        <input type="number" class="pct-input b" min="0" max="100" placeholder="0"
+               value="${m.b}" data-mu="${mui}" data-mi="${mi}" data-side="b"/>
+      `;
+      rowsEl.appendChild(row);
+    });
+  });
+
+  // attach input listeners
+  document.querySelectorAll('.pct-input').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      const mui=+inp.dataset.mu, mi=+inp.dataset.mi, side=inp.dataset.side;
+      state.matchups[mui].matches[mi][side] = inp.value;
+      updateCard(mui);
+      updateGrand();
+    });
+  });
+
+  state.matchups.forEach((_,mui)=>updateCard(mui));
+  updateGrand();
+}
+
+function updateCard(mui){
+  const mu = state.matchups[mui];
+  const aTotal = sumSide(mu.matches,'a');
+  const bTotal = sumSide(mu.matches,'b');
+  const hasData = aTotal>0||bTotal>0;
+
+  // update split bars per match row
+  mu.matches.forEach((m,mi)=>{
+    const a=parseN(m.a), b=parseN(m.b), t=a+b;
+    const fillA = document.getElementById(`fill-a-${mui}-${mi}`);
+    const fillB = document.getElementById(`fill-b-${mui}-${mi}`);
+    if(t>0){
+      fillA.style.width = `${(a/t)*100}%`;
+      fillB.style.width = `${(b/t)*100}%`;
+    } else {
+      fillA.style.width='0%';
+      fillB.style.width='0%';
+    }
+  });
+
+  document.getElementById(`tot-a-${mui}`).textContent = aTotal.toFixed(1)+'%';
+  document.getElementById(`tot-b-${mui}`).textContent = bTotal.toFixed(1)+'%';
+
+  const winEl = document.getElementById(`mu-winner-${mui}`);
+  const card  = document.getElementById(`card-${mui}`);
+  card.classList.remove('a-winning','b-winning');
+
+  if(hasData){
+    winEl.style.display='block';
+    if(aTotal>bTotal){
+      winEl.textContent = `⚔️ ${state.playersA[mui]}`;
+      card.classList.add('a-winning');
+    } else if(bTotal>aTotal){
+      winEl.textContent = `⚔️ ${state.playersB[mui]}`;
+      card.classList.add('b-winning');
+    } else {
+      winEl.textContent = '🤝 DRAW';
+    }
+  } else {
+    winEl.style.display='none';
+  }
+}
+
+function updateGrand(){
+  let aTotal=0, bTotal=0, aWins=0, bWins=0;
+  state.matchups.forEach(mu=>{
+    const a=sumSide(mu.matches,'a'), b=sumSide(mu.matches,'b');
+    aTotal+=a; bTotal+=b;
+    if(a>b) aWins++; else if(b>a) bWins++;
+  });
+
+  const hasData = aTotal>0||bTotal>0;
+  const grand = document.getElementById('grand-result');
+  if(!hasData){ grand.classList.remove('visible'); return; }
+  grand.classList.add('visible');
+
+  const teamAName = document.getElementById('team-a-name').textContent.trim()||'Team Alpha';
+  const teamBName = document.getElementById('team-b-name').textContent.trim()||'Team Bravo';
+
+  document.getElementById('res-a-name').textContent = teamAName;
+  document.getElementById('res-b-name').textContent = teamBName;
+  document.getElementById('res-a-stats').textContent = `${aWins} matchup wins • ${aTotal.toFixed(1)}%`;
+  document.getElementById('res-b-stats').textContent = `${bWins} matchup wins • ${bTotal.toFixed(1)}%`;
+
+  const total = aTotal+bTotal;
+  const aPct = total>0 ? (aTotal/total)*100 : 50;
+  document.getElementById('grand-bar-a').style.width = aPct+'%';
+
+  const winnerEl = document.getElementById('winner-name');
+  const wlEl = document.querySelector('.winner-label');
+  if(aTotal>bTotal){
+    winnerEl.textContent = `🏆 ${teamAName} 🏆`;
+    wlEl.style.display='block';
+  } else if(bTotal>aTotal){
+    winnerEl.textContent = `🏆 ${teamBName} 🏆`;
+    wlEl.style.display='block';
+  } else {
+    winnerEl.textContent = "🤝 IT'S A DRAW";
+    wlEl.style.display='none';
+  }
+}
+
+// sync grand result team names when edited
+['team-a-name','team-b-name'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateGrand);
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderPlayers();
+renderCards();
+</script>
+</body>
+</html>
